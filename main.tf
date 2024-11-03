@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "London"
+  region = "eu-west-2"
 }
 
 # Call the module and pass variable values
