@@ -7,6 +7,7 @@ This project automates the deployment of an AWS EC2 instance using Terraform and
 - Deploys an EC2 instance on AWS.
 - Outputs the instance's public IP, accessible directly from the command line.
 - Configurable instance types and AMI selection.
+- GitHub Actions for CI/CD to automate deployment.
 
 ## Prerequisites
 
@@ -17,7 +18,10 @@ This project automates the deployment of an AWS EC2 instance using Terraform and
 ## Project Structure
 
 ```plaintext
-├── main.tf                 # Root configuration, calls the EC2 module
+├── main.tf                 # Root configuration, calls the EC2 module            #
+├── .github/
+│   └── workflows/
+│       └── terraform.yml   # GitHub Actions workflow for Terraform
 ├── modules/
 │   └── ec2-instance/
 │       ├── main.tf         # Defines the EC2 instance resource
@@ -44,6 +48,17 @@ This project automates the deployment of an AWS EC2 instance using Terraform and
    ```bash
    terraform output ec2_public_ip
    ```
+
+## GitHub Actions
+
+This project includes a GitHub Actions workflow to automate Terraform tasks. The workflow is defined in `.github/workflows/terraform.yml` and performs the following steps:
+
+- **Checkout code**: Retrieves the latest version of the repository.
+- **Setup Terraform**: Installs the specified version of Terraform.
+- **Terraform Init**: Initializes the Terraform configuration.
+- **Terraform Validate**: Validates the Terraform configuration files.
+- **Terraform Plan**: Creates an execution plan for the changes.
+- **Terraform Apply**: Automatically applies the changes to the infrastructure when changes are pushed to the `main` branch.
 
 ## Customization
 
