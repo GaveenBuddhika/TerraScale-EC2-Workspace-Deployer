@@ -1,19 +1,23 @@
 provider "aws" {
-  region = "eu-north-1"
+  region = "London"
 }
 
 # Call the module and pass variable values
 module "ec2_instance" {
-  source      = "./modules/ec2-instance"
-  ami         = var.ami  # Pass the AMI ID
-  environment = var.environment # Pass the environment
+  source      = "./modules/ec2_instance"
+  ami         = "ami-0acc77abdfc7ed5a6" # Pass the AMI ID
+  environment = "dev" # Pass the environment
   instance_type = lookup(
     {
       "dev"  = "t3.micro"
       "test" = "t2.micro"
       "prod" = "t3.medium"
     },
-    var.environment,
+    "dev",
     "t3.micro" # Default instance type if environment is not found
   )
+}
+
+output "ec2_instance_public_ip" {
+  value = module.ec2_instance.public-ip-address
 }
