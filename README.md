@@ -18,7 +18,7 @@ This project automates the deployment of an AWS EC2 instance using Terraform and
 ## Project Structure
 
 ```plaintext
-├── main.tf                 # Root configuration, calls the EC2 module            #
+├── main.tf                 # Root configuration, calls the EC2 module            
 ├── .github/
 │   └── workflows/
 │       └── terraform.yml   # GitHub Actions workflow for Terraform
