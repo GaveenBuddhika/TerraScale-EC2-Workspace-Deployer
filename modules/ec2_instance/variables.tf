@@ -10,8 +10,4 @@ variable "instance_type" {
   type        = string
 }
 
-# Variable for environment
-variable "environment" {
-  description = "The environment for the instance (e.g., dev, test, prod)"
-  type        = string
-}
+

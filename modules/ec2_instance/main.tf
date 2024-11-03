@@ -7,7 +7,7 @@ resource "aws_instance" "example" {
   instance_type = var.instance_type
 
   tags = {
-    Name        = "${var.environment}-instance"
-    Environment = var.environment
+    Name        = "${terraform.workspace}-instance"
+    
   }
 }
