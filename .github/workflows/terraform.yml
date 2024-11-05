@@ -13,7 +13,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.3.0 # Specify the version of Terraform you want to use
+          terraform_version: 1.3.0
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -22,7 +22,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Extract Environment
+      - name: Extract Environment
         id: extract_env
         run: |
           # Remove the 'branch-' prefix to get the environment name
@@ -37,13 +37,11 @@ jobs:
           terraform workspace list | grep -w "${{ env.ENV_NAME }}" || terraform workspace new "${{ env.ENV_NAME }}"
           terraform workspace select "${{ env.ENV_NAME }}"
 
-
       - name: Terraform Validate
         run: terraform validate
 
       - name: Terraform Plan
-        id: plan
-        run: terraform plan
+        run: terraform plan 
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply 
