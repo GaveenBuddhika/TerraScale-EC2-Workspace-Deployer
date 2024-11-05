@@ -22,6 +22,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+
+      - name: Extract Environment
+        id: extract_env
+        run: |
+          # Remove the 'branch-' prefix to get the environment name
+          export ENV_NAME="${GITHUB_REF#refs/heads/branch-}"
+          echo "ENV_NAME=$ENV_NAME" >> $GITHUB_ENV
+          
       - name: Terraform Init
         run: terraform init
       
