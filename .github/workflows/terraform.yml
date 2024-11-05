@@ -25,11 +25,19 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Create or Select Terraform Workspace
-        id: workspace
+     - name: Extract Environment
+        id: extract_env
         run: |
-          terraform workspace list | grep -w "${{ github.ref_name }}" || terraform workspace new "${{ github.ref_name }}"
-          terraform workspace select "${{ github.ref_name }}"
+          # Remove the 'branch-' prefix to get the environment name
+          export ENV_NAME="${GITHUB_REF#refs/heads/branch-}"
+          echo "ENV_NAME=$ENV_NAME" >> $GITHUB_ENV
+    
+      
+      - name: Create or Select Terraform Workspace
+        run: |
+          terraform workspace list | grep -w "${{ env.ENV_NAME }}" || terraform workspace new "${{ env.ENV_NAME }}"
+          terraform workspace select "${{ env.ENV_NAME }}"
+
 
       - name: Terraform Validate
         run: terraform validate
