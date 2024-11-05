@@ -1,73 +1,62 @@
-# Terraform EC2 Instance Deployment
 
-This project automates the deployment of an AWS EC2 instance using Terraform and provides the instance’s public IP as a command line output. The setup uses a modular structure, making it reusable and configurable for various environments.
+# Terraform AWS EC2 Instance Deployment
 
-## Features
-
-- Deploys an EC2 instance on AWS.
-- Outputs the instance's public IP, accessible directly from the command line.
-- Configurable instance types and AMI selection.
-- GitHub Actions for CI/CD to automate deployment.
-
-## Prerequisites
-
-- [Terraform](https://www.terraform.io/downloads.html) installed on your local machine.
-- An AWS account with programmatic access configured (access key and secret key).
-- IAM role with sufficient permissions to launch EC2 instances.
+This project automates the deployment of an AWS EC2 instance using Terraform, with modular support for configuring different environments. The setup utilizes GitHub Actions to automate deployment for each branch, creating isolated Terraform workspaces for `dev`, `stage`, and `prod` environments.
 
 ## Project Structure
 
-```plaintext
-├── main.tf                 # Root configuration, calls the EC2 module            
-├── .github/
-│   └── workflows/
-│       └── terraform.yml   # GitHub Actions workflow for Terraform
-├── modules/
-│   └── ec2-instance/
-│       ├── main.tf         # Defines the EC2 instance resource
-│       ├── variables.tf    # Module-specific variable declarations
-│       └── outputs.tf      # Outputs public IP for the instance
-```
+- **Production Branch (`prod`)**: Used for production-ready deployments.
+- **Development Branch (`dev`)**: Used for testing and developing new features.
+- **Staging Branch (`stage`)**: Used for QA and staging purposes.
 
-## Usage
+## Features
 
-1. **Initialize Terraform**:
-   ```bash
-   terraform init
-   ```
+- Modularized Terraform code for reusable configurations
+- Dynamic workspace creation based on branches (`prod`, `dev`, `stage`)
+- GitHub Actions workflow to handle automatic deployment on each branch
+- Outputs the public IP of the EC2 instance
 
-2. **Apply the Configuration**:
-   Run the following command to deploy the EC2 instance.
-   ```bash
-   terraform apply
-   ```
-   Confirm the changes by typing `yes` when prompted.
+## Prerequisites
 
-3. **Retrieve the Public IP**:
-   After deployment, view the public IP directly:
-   ```bash
-   terraform output ec2_public_ip
-   ```
+- [Terraform](https://www.terraform.io/downloads.html)
+- AWS account with IAM user and access keys configured in GitHub Secrets
+- [GitHub CLI](https://cli.github.com/) (optional for branch creation and management)
 
-## GitHub Actions
+## Environment Setup
 
-This project includes a GitHub Actions workflow to automate Terraform tasks. The workflow is defined in `.github/workflows/terraform.yml` and performs the following steps:
+### AWS Credentials
 
-- **Checkout code**: Retrieves the latest version of the repository.
-- **Setup Terraform**: Installs the specified version of Terraform.
-- **Terraform Init**: Initializes the Terraform configuration.
-- **Terraform Validate**: Validates the Terraform configuration files.
-- **Terraform Plan**: Creates an execution plan for the changes.
-- **Terraform Apply**: Automatically applies the changes to the infrastructure when changes are pushed to the `main` branch.
+Add the following secrets to your GitHub repository:
+- **AWS_ACCESS_KEY_ID**: Your IAM user’s access key ID.
+- **AWS_SECRET_ACCESS_KEY**: Your IAM user’s secret access key.
+- **AWS_REGION**: Desired AWS region (e.g., `us-west-2`).
 
-## Customization
+### GitHub Actions Workflow
 
-The `instance_type` and `ami` variables can be customized by modifying the values in `main.tf` or by adding a `variables.tf` file for more flexible configuration.
+The GitHub Actions workflow will:
+1. Configure AWS credentials.
+2. Initialize and validate Terraform.
+3. Dynamically create or select a Terraform workspace based on the branch name.
+4. Plan and apply the Terraform configuration.
 
-## Cleanup
+## Running the Workflow
 
-To delete the created resources, use:
-```bash
-terraform destroy
-```
-Confirm with `yes` to remove all resources created by this configuration.
+1. **Manual Trigger**: Go to **Actions > Terraform Workflow** and select **Run workflow**. Choose the desired branch (e.g., `dev` or `stage`).
+2. **Automatic Trigger**: The workflow runs on pushes and pull requests to `prod`, `dev`, and `stage`.
+
+---
+
+## Branch-specific Configurations
+
+Each branch represents an isolated environment:
+- `prod`: Production, using the `t3.medium` instance type.
+- `dev`: Development, using the `t3.micro` instance type.
+- `stage`: Staging, using the `t3.nano` instance type.
+
+### Variables and Outputs
+
+The EC2 instance's public IP is output after `terraform apply`, and you can retrieve it from the GitHub Actions job summary.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
